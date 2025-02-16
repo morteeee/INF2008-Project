@@ -157,7 +157,7 @@ start_time = time.time()
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Feature selection using RFE with Logistic Regression
-log_model = LogisticRegression(max_iter=1000, random_state=42)
+log_model = LogisticRegression(max_iter=5000, random_state=42)
 rfe = RFE(estimator=log_model, n_features_to_select=10)  # Select top 10 features
 rfe.fit(X_train, y_train)
 
@@ -178,17 +178,17 @@ X_train_resampled, y_train_resampled = pipeline.fit_resample(X_train, y_train)
 
 # Define hyperparameter grid for Logistic Regression
 param_dist = {
-    'C': np.logspace(-4, 4, 20),  # Regularization strength
+    'C': np.logspace(-6, 4, 20),  # Regularization strength
     'penalty': ['l2'],  # Regularization type
     'solver': ['saga'],  # Solvers that support l1 regularization
-    'tol': [1e-4, 1e-3, 1e-2]  # Tolerance for stopping criteria
+    'tol': [1e-5, 1e-6]  # Tolerance for stopping criteria
 }
 
 # Initialize RandomizedSearchCV
 random_search = RandomizedSearchCV(
     estimator=LogisticRegression(random_state=42),
     param_distributions=param_dist,
-    n_iter=100,  # Number of iterations to sample
+    n_iter=1000,  # Number of iterations to sample
     scoring='accuracy',
     cv=3,  # Cross-validation folds
     random_state=42,
