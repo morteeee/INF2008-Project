@@ -43,18 +43,20 @@ X_train = X_train[ada_top_features]
 X_test = X_test[ada_top_features]
 
 # Perform Data Balancing (SMOTE + Undersampling) only on training data
-over_ada = SMOTE(sampling_strategy=0.8, random_state=42)
-under_ada = RandomUnderSampler(sampling_strategy=0.5, random_state=42)
+over_ada = SMOTE(sampling_strategy=0.9, random_state=42)  # Increase oversampling
+under_ada = RandomUnderSampler(sampling_strategy=0.6, random_state=42)  # Reduce undersampling
 
 steps_ada = [('under', under_ada), ('over', over_ada)]
 pipeline_ada = Pipeline(steps=steps_ada)
 X_train_resampled, y_train_resampled = pipeline_ada.fit_resample(X_train, y_train)
 
-# Define parameter grid for GridSearchCV
+# Define parameter grid for GridSearchCV with extended hyperparameters
 param_grid = {
     "n_estimators": [100, 200, 300],
-    "learning_rate": [0.1, 0.5, 1],
-    "estimator": [DecisionTreeClassifier(max_depth=3, class_weight={0:1, 1:5}), DecisionTreeClassifier(max_depth=5, class_weight={0:1, 1:10})]
+    "learning_rate": [0.05, 0.1, 0.5, 1],
+    "estimator": [DecisionTreeClassifier(max_depth=3, class_weight={0: 1, 1: 10}),
+                  DecisionTreeClassifier(max_depth=5, class_weight={0: 1, 1: 15}),
+                  DecisionTreeClassifier(max_depth=7, class_weight={0: 1, 1: 20})]
 }
 
 # Grid search for best hyperparameters
