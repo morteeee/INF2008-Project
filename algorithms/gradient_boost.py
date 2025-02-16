@@ -16,7 +16,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Load dataset
-file_path = "creditcard.csv"
+file_path = "/data/creditcard.csv"
 data = pd.read_csv(file_path)
 
 # Prepare dataset
