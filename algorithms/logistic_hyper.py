@@ -177,6 +177,7 @@ pipeline = Pipeline(steps=steps)
 X_train_resampled, y_train_resampled = pipeline.fit_resample(X_train, y_train)
 
 # Define hyperparameter grid for RandomizedSearchCV
+# Best Param: {'tol': 0.0001, 'solver': 'saga', 'penalty': 'l2', 'C': np.float64(0.012742749857031334)}
 param_dist = {
     'C': np.logspace(-4, 4, 20),  # Regularization strength
     'penalty': ['l2'],  
