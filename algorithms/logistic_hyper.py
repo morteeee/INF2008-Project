@@ -157,7 +157,7 @@ start_time = time.time()
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Feature selection using RFE with Logistic Regression
-log_model = LogisticRegression(max_iter=5000, random_state=42)
+log_model = LogisticRegression(max_iter=1000, random_state=42)
 rfe = RFE(estimator=log_model, n_features_to_select=10)  # Select top 10 features
 rfe.fit(X_train, y_train)
 
@@ -169,41 +169,46 @@ X_train = X_train[selected_features]
 X_test = X_test[selected_features]
 
 # Perform Data Balancing (SMOTE + Undersampling) only on training data
-over_sampler = SMOTE(sampling_strategy=0.5, random_state=42)
+over_sampler = SMOTE(sampling_strategy=0.3, random_state=42)
 under_sampler = RandomUnderSampler(sampling_strategy=0.1, random_state=42)
 
 steps = [('under', under_sampler), ('over', over_sampler)]
 pipeline = Pipeline(steps=steps)
 X_train_resampled, y_train_resampled = pipeline.fit_resample(X_train, y_train)
 
-# Define hyperparameter grid for Logistic Regression
+# Define hyperparameter grid for RandomizedSearchCV
 param_dist = {
-    'C': np.logspace(-6, 4, 20),  # Regularization strength
-    'penalty': ['l2'],  # Regularization type
-    'solver': ['saga'],  # Solvers that support l1 regularization
-    'tol': [1e-5, 1e-6]  # Tolerance for stopping criteria
+    'C': np.logspace(-4, 4, 20),  # Regularization strength
+    'penalty': ['l2'],  
+    'solver': ['saga'],  
+    'tol': [1e-4, 1e-3, 1e-2]  # Tolerance for stopping criteria
 }
 
 # Initialize RandomizedSearchCV
 random_search = RandomizedSearchCV(
-    estimator=LogisticRegression(random_state=42),
+    estimator=LogisticRegression(max_iter=1000, random_state=42),
     param_distributions=param_dist,
-    n_iter=1000,  # Number of iterations to sample
+    n_iter=50,  # Number of iterations to sample
     scoring='accuracy',
-    cv=3,  # Cross-validation folds
+    cv=3,  
     random_state=42,
-    n_jobs=-1  # Use all available cores for computation
+    n_jobs=-1  
 )
 
 # Train model using RandomizedSearchCV
 random_search.fit(X_train_resampled, y_train_resampled)
 
 # Get best model from RandomizedSearchCV
-best_log_model = random_search.best_estimator_
+log_model_final = random_search.best_estimator_
+
+# Print the best hyperparameters
+print("\nBest Hyperparameters found by RandomizedSearchCV:")
+print(random_search.best_params_)
+
 
 # Predictions on test set
-y_pred = best_log_model.predict(X_test)
-y_pred_prob = best_log_model.predict_proba(X_test)[:, 1]
+y_pred_prob = log_model_final.predict_proba(X_test)[:, 1]
+y_pred = (y_pred_prob >= 0.90).astype(int)
 
 # Evaluate model
 accuracy = accuracy_score(y_test, y_pred)
@@ -215,8 +220,8 @@ end_time = time.time()
 total_time = end_time - start_time
 
 # Print results
-print("Best Hyperparameters (RandomizedSearchCV):")
-print(random_search.best_params_)
+print("Top 10 Selected Features (RFE - Logistic Regression):")
+print(selected_features)
 print("\nClass distribution after resampling:", Counter(y_train_resampled))
 print(f"\nTotal Execution Time: {total_time:.2f} seconds")
 print(f"\nAccuracy: {accuracy:.4f}")
