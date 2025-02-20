@@ -1,11 +1,10 @@
-# Import libraries
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load dataset
-data = pd.read_csv('creditcard.csv')
+data = pd.read_csv('../data/creditcard.csv')
 
 # Display the first few rows and dataset information
 data_info = {
@@ -25,19 +24,37 @@ print(data_info["describe"])
 data_quality = {
     "missing_values": data.isnull().sum(),
     "null_values": data.isna().sum(),
-    "duplicate_rows": data.duplicated().sum(),
 }
 
 print("=== Missing Values ===")
 print(data_quality["missing_values"])
 print("\n=== Null Values ===")
 print(data_quality["null_values"])
-print("\n=== Duplicate Rows ===")
-print(data_quality["duplicate_rows"])
 
-#Analysing part
+# Analyzing fraud vs. non-fraud cases
+fraud_count = data['Class'].value_counts()
+labels = ['No Fraud', 'Fraud']
+colors = ['#1E90FF', '#FF4C4C']
 
-# Split Fraud and Non-Fraud Data
+# Create subplots
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Pie Chart for Fraud Distribution
+axes[0].pie(fraud_count, labels=labels, autopct='%1.1f%%', colors=colors, startangle=90, wedgeprops={'edgecolor': 'black'})
+axes[0].set_title("Fraud vs Non-Fraud Distribution")
+
+# Bar Chart for Fraud Cases
+sns.barplot(x=fraud_count.index, y=fraud_count.values, ax=axes[1], palette=['blue', 'red'])
+axes[1].set_title("Number of Fraud Cases")
+axes[1].set_xlabel("Class")
+axes[1].set_ylabel("Count")
+for index, value in enumerate(fraud_count.values):
+    axes[1].text(index, value + 500, str(value), ha='center', fontsize=12)
+
+plt.tight_layout()
+plt.show()
+
+# Analyzing fraud and non-fraud statistics
 fraud = data[data['Class'] == 1].describe().T
 nofraud = data[data['Class'] == 0].describe().T
 
