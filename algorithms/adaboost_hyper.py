@@ -4,7 +4,6 @@ import time
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.ensemble import AdaBoostClassifier
-from sklearn.tree import DecisionTreeClassifier
 from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.pipeline import Pipeline
