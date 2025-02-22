@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load dataset
-data = pd.read_csv('../data/creditcard.csv')
+data = pd.read_csv('data/creditcard.csv')
 
 # Display the first few rows and dataset information
 data_info = {
