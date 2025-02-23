@@ -16,7 +16,7 @@ from collections import Counter
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Load dataset
-file_path = "C:/Users/Marvin/Documents/School/Year 2/Y2T2/INF2008 - Machine Learning/Project/INF2008-Project/data/creditcard.csv"
+file_path = "../data/creditcard.csv"
 data = pd.read_csv(file_path)
 
 # Prepare dataset
