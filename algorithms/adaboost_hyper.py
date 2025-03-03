@@ -4,6 +4,7 @@ import time
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
 from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.pipeline import Pipeline
@@ -22,9 +23,6 @@ data = pd.read_csv(file_path)
 # Prepare dataset
 X = data.drop(columns=['Class'])
 y = data['Class']
-
-# Start timer
-start_time = time.time()
 
 # Split dataset before any processing
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -65,6 +63,9 @@ grid_search.fit(X_train_resampled, y_train_resampled)
 # Use best model from grid search
 ada_model_final = grid_search.best_estimator_
 ada_model_final.fit(X_train_resampled, y_train_resampled)
+
+# Start timer
+start_time = time.time()
 
 # Predictions on test set
 y_pred = ada_model_final.predict(X_test)

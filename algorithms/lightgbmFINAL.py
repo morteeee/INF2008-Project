@@ -16,7 +16,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Load dataset
-file_path = "C:\EverythingElse\GitHubDesktopProjects\INF2008-Projectdatastuff\creditcard.csv"
+file_path = "../data/creditcard.csv"
 data = pd.read_csv(file_path)
 
 # Prepare dataset
@@ -65,8 +65,6 @@ random_search = RandomizedSearchCV(
     n_jobs=-1
 )
 
-# Start timer
-start_time = time.time()
 
 # Perform hyperparameter tuning
 random_search.fit(X_train_resampled, y_train_resampled)
@@ -75,13 +73,12 @@ random_search.fit(X_train_resampled, y_train_resampled)
 best_params = random_search.best_params_
 best_model = random_search.best_estimator_
 
+# Start timer
+start_time = time.time()
+
 # Make predictions
 y_pred = best_model.predict(X_test)
 y_prob = best_model.predict_proba(X_test)[:, 1]
-
-# End timer
-end_time = time.time()
-execution_time = end_time - start_time
 
 # Calculate metrics
 accuracy = accuracy_score(y_test, y_pred)
@@ -90,6 +87,10 @@ recall = recall_score(y_test, y_pred)
 f1 = f1_score(y_test, y_pred)
 conf_matrix = confusion_matrix(y_test, y_pred)
 class_report = classification_report(y_test, y_pred)
+
+# End timer
+end_time = time.time()
+execution_time = end_time - start_time
 
 # Print results
 print("Best Parameters:", best_params)

@@ -24,9 +24,6 @@ data = pd.read_csv(file_path)
 X = data.drop(columns=['Class'])
 y = data['Class']
 
-# Start timer
-start_time = time.time()
-
 # Split dataset before any processing
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -76,10 +73,14 @@ random_search.fit(X_train_resampled, y_train_resampled)
 # Get best model from RandomizedSearchCV
 log_model_final = random_search.best_estimator_
 
+
 # Print the best hyperparameters
 print("\nBest Hyperparameters found by RandomizedSearchCV:")
 print(random_search.best_params_)
 
+
+# Start timer
+start_time = time.time()
 
 # Predictions on test set
 y_pred_prob = log_model_final.predict_proba(X_test)[:, 1]

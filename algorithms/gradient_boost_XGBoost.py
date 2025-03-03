@@ -78,12 +78,11 @@ best_model = random_search.best_estimator_
 y_pred = best_model.predict(X_test)
 y_prob = best_model.predict_proba(X_test)[:, 1]
 
-# Start timer for hyperparameter tuning
-start_time = time.time()
-
-
 # Get the best parameters and best model
 print("Best Parameters:", best_params)
+
+# Start timer for hyperparameter tuning
+start_time = time.time()
 
 # Make predictions with the best model
 y_pred_random = best_model.predict(X_test)
